@@ -87,7 +87,6 @@ export class DataService {
     );
   }
 
-  // Méthodes privées pour les calculs
   private calculateTotalMedals(participations: Participation[]): number {
     return participations.reduce((sum, p) => sum + p.medalsCount, 0);
   }

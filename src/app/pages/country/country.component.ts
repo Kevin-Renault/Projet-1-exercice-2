@@ -18,7 +18,7 @@ export class CountryComponent implements OnInit {
   public totalAthletes: number = 0;
   public error!: string;
 
-  public medals!: string[];
+  public medalsPerYear!: string[];
   public years!: number[];
 
   constructor(private route: ActivatedRoute, private http: HttpClient) {
@@ -43,7 +43,7 @@ export class CountryComponent implements OnInit {
           this.titlePage = countryWithStats.country.country;
           this.totalEntries = countryWithStats.country.participations.length;
           this.years = countryWithStats.years;
-          this.medals = countryWithStats.medals;
+          this.medalsPerYear = countryWithStats.medals;
           this.totalMedals = countryWithStats.totalMedals;
           this.totalAthletes = countryWithStats.totalAthletes;
         },

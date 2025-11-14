@@ -8,29 +8,38 @@ import { Chart } from 'chart.js';
 })
 export class ChartCardComponent {
 
-    @Input()  medals!: string[];
-    @Input()  years!: number[];
-    
+  @Input() title!: string;
+  @Input() label!: string;
+  @Input() values!: string[];
+  @Input() years!: number[];
+
   public lineChart!: Chart<"line", string[], number>;
-  
-  
+
+
   ngOnChanges() {
-    // Vérifie si les deux Inputs sont définis et non vides
-    if (this.years && this.medals && this.years.length > 0 && this.medals.length > 0) {
-      this.buildChart(this.years, this.medals);
+    if (this.areInputsValid()) {
+      this.buildChart(this.years, this.values);
     }
   }
 
+  private areInputsValid(): boolean {
+    return [
+      this.title,
+      this.label,
+      this.years,
+      this.values
+    ].every(input => input != null && input.length > 0);
+  }
 
-  buildChart(years: number[], medals: string[]) {
-    const lineChart = new Chart("countryChart", {
+  buildChart(years: number[], values: string[]) {
+    const lineChart = new Chart(this.title, {
       type: 'line',
       data: {
         labels: years,
         datasets: [
           {
-            label: "medals",
-            data: medals,
+            label: this.label,
+            data: values,
             backgroundColor: '#0b868f'
           },
         ]
