@@ -133,5 +133,32 @@
         "athleteCount": 403
       }
     ]
+  },
+  {
+    "id": 6,
+    "country": "Brésil",
+    "participations": [
+      {
+        "id": 1,
+        "year": 2004,
+        "city": "Athènes",
+        "medalsCount": 6,
+        "athleteCount": 135
+      },
+      {
+        "id": 2,
+        "year": 2016,
+        "city": "Rio de Janeiro",
+        "medalsCount": 12,
+        "athleteCount": 52
+      },
+      {
+        "id": 3,
+        "year": 2020,
+        "city": "Tokyo",
+        "medalsCount": 17,
+        "athleteCount": 234
+      }
+    ]
   }
 ]
