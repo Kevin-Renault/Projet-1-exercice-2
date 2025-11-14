@@ -10,24 +10,24 @@ import { ColorUtils } from 'src/app/utils/color-utils';
 })
 export class DashboardPieChartComponent {
 
-  
-  @Input()  keyValueInput!: Record<string, number>;;
 
-  @Input()  countryNames!: string[];
-  @Input()  sumOfAllMedalsYears!: number[];
-  
+  @Input() keyValueInput!: Record<string, number>;;
+
+  @Input() countryNames!: string[];
+  @Input() sumOfAllMedalsYears!: number[];
+
   public pieChart!: Chart<"pie", number[], string>;
 
   constructor(private router: Router) { }
 
 
   ngOnChanges() {
-    // Vérifie si les deux Inputs sont définis et non vides
+    // Vérifie si l'Input est défini et non vide
     if (this.keyValueInput && Object.keys(this.keyValueInput)) {
       this.buildPieChart(Object.keys(this.keyValueInput), Object.values(this.keyValueInput));
     }
   }
-  
+
   buildPieChart(countryNames: string[], sumOfAllMedalsYears: number[]) {
     const pieChart = new Chart("DashboardPieChart", {
       type: 'pie',
@@ -36,7 +36,7 @@ export class DashboardPieChartComponent {
         datasets: [{
           label: 'Medals',
           data: sumOfAllMedalsYears,
-          backgroundColor: ColorUtils.generateDistinctColors(countryNames.length)  ,
+          backgroundColor: ColorUtils.generateDistinctColors(countryNames.length),
           hoverOffset: 4
         }],
       },
@@ -53,7 +53,7 @@ export class DashboardPieChartComponent {
           }
         }
       }
-    });    
+    });
     this.pieChart = pieChart;
   }
 }
