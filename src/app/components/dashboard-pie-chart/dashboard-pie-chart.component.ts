@@ -1,6 +1,7 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import Chart from 'chart.js/auto';
+import { PieChartData } from 'src/app/models/pie-chart-data.model';
 import { ColorUtils } from 'src/app/utils/color-utils';
 
 @Component({
@@ -10,9 +11,7 @@ import { ColorUtils } from 'src/app/utils/color-utils';
 })
 export class DashboardPieChartComponent {
 
-
-  @Input() keyValueInput!: Record<string, number>;;
-
+  @Input() pieChartDatas!: PieChartData[];
   @Input() countryNames!: string[];
   @Input() sumOfAllMedalsYears!: number[];
 
@@ -23,12 +22,12 @@ export class DashboardPieChartComponent {
 
   ngOnChanges() {
     // Vérifie si l'Input est défini et non vide
-    if (this.keyValueInput && Object.keys(this.keyValueInput)) {
-      this.buildPieChart(Object.keys(this.keyValueInput), Object.values(this.keyValueInput));
+    if (this.pieChartDatas) {
+      this.buildPieChart(this.pieChartDatas.map(item => item.id), this.pieChartDatas.map(item => item.country), this.pieChartDatas.map(item => item.medals));
     }
   }
 
-  buildPieChart(countryNames: string[], sumOfAllMedalsYears: number[]) {
+  buildPieChart(ids: number[], countryNames: string[], sumOfAllMedalsYears: number[]) {
     const pieChart = new Chart("DashboardPieChart", {
       type: 'pie',
       data: {
@@ -48,7 +47,8 @@ export class DashboardPieChartComponent {
             if (points.length) {
               const firstPoint = points[0];
               const countryName = pieChart.data.labels ? pieChart.data.labels[firstPoint.index] : '';
-              this.router.navigate(['country', countryName]);
+              const id = ids[firstPoint.index];
+              this.router.navigate(['country', id]);
             }
           }
         }

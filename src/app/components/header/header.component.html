@@ -1,0 +1,12 @@
+<div class="center">
+    <div>{{ title }}</div>
+</div>
+<div class="split">
+    @for(stat of stats; track stat)
+    {
+    <div>
+        <p>{{ stat.libelle }}</p>
+        <p>{{ stat.value }}</p>
+    </div>
+    }
+</div>
