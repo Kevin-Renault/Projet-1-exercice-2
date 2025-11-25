@@ -17,7 +17,7 @@ export class DashboardPieChartComponent {
 
   @ViewChild('pieCanvas', { static: true }) pieCanvas!: ElementRef<HTMLCanvasElement>;
 
-  public pieChart: any;
+  public pieChart!: Chart;
 
   constructor(private router: Router) { }
 

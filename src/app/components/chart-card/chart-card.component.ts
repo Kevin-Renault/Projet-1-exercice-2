@@ -15,7 +15,7 @@ export class ChartCardComponent {
 
   @ViewChild('chartCanvas', { static: true }) chartCanvas!: ElementRef<HTMLCanvasElement>;
 
-  public lineChart: any;
+  public lineChart!: Chart;
 
   ngOnChanges() {
     if (this.areInputsValid() && this.chartCanvas) {
