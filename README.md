@@ -1,29 +1,58 @@
+
 # OlympicGamesStarter
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.6.
+## Description
 
-Don't forget to install your node_modules before starting (`npm install`).
+Ce dépôt contient une application Angular d'exemple (starter) qui affiche des données d'olympiades à partir d'un fichier mock. Le contenu suivant explique comment installer, lancer et comprendre rapidement la structure du projet ainsi que ses principales fonctionnalités.
 
-## Development server
+## Installation
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Installer les dépendances :
 
-## Build
+```
+npm install
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- Lancer le serveur de développement :
 
-## Where to start
+```
+npm run start
+```
 
-As you can see, an architecture has already been defined for the project. It is just a suggestion, you can choose to use your own. The predefined architecture includes (in addition to the default angular architecture) the following:
+L'application sera disponible sur `http://localhost:4200/`.
 
-- `components` folder: contains every reusable components
-- `pages` folder: contains components used for routing
-- `core` folder: contains the business logic (`services` and `models` folders)
+## Structure du projet
 
-I suggest you to start by understanding this starter code. Pay an extra attention to the `app-routing.module.ts` and the `olympic.service.ts`.
+Organisation principale (dossier `src/`) :
 
-Once mastered, you should continue by creating the typescript interfaces inside the `models` folder. As you can see I already created two files corresponding to the data included inside the `olympic.json`. With your interfaces, improve the code by replacing every `any` by the corresponding interface.
+- `src/app/` : code applicatif principal
+	- `components/` : composants réutilisables (ex. `chart-card`, `dashboard-pie-chart`)
+	- `pages/` : composants de page et routage (`home`, `country`, `not-found`)
+	- `services/` : services Angular (ex. `data.service.ts`)
+	- `models/` : interfaces/types TypeScript (`country.model.ts`, `participation.model.ts`)
+	- `constants/` et `utils/` : utilitaires et constantes partagées
 
-You're now ready to implement the requested features.
+- `src/assets/mock/olympic.json` : données mock utilisées par l'application
 
-Good luck!
+- Fichiers de configuration :
+	- `angular.json`, `tsconfig.json`, `karma.conf.js`, etc.
+
+## Fonctionnalités
+
+- Lecture de données mock (JSON) et affichage sous forme de graphiques et listes
+- Composants réutilisables pour cartes et graphiques
+- Pages : tableau de bord (`home`), détail par pays (`country`), page 404 (`not-found`)
+- Architecture modulable prête pour extension (ajout de nouveaux composants, services, ou intégration d'une API réelle)
+
+## Scripts utiles
+
+- `npm install` : installe les dépendances
+- `npm run start` ou `ng serve` : lance le serveur de développement
+- `npm run build` ou `ng build` : construit l'application pour la production
+- `npm test` : lance les tests unitaires (Karma/Jasmine si configurés)
+
+## Conseils pour démarrer
+
+- Examiner `src/app/app-routing.module.ts` pour comprendre les routes
+- Regarder `src/app/services/data.service.ts` pour voir comment les données sont chargées
+- Vérifier `src/assets/mock/olympic.json` pour connaître la structure des données
