@@ -1,0 +1,12 @@
+/* Dans votre fichier CSS global ou composant */
+.chart-responsive {
+    position: relative;
+    width: 100%;
+    height: 32vh;
+    /* adjust as needed */
+}
+
+.chart-responsive canvas {
+    width: 100% !important;
+    height: 100% !important;
+}

@@ -1,6 +1,7 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import Chart from 'chart.js/auto';
+import { PieChartData } from 'src/app/models/pie-chart-data.model';
 import { ColorUtils } from 'src/app/utils/color-utils';
 
 @Component({
@@ -10,26 +11,28 @@ import { ColorUtils } from 'src/app/utils/color-utils';
 })
 export class DashboardPieChartComponent {
 
-
-  @Input() keyValueInput!: Record<string, number>;;
-
+  @Input() pieChartDatas!: PieChartData[];
   @Input() countryNames!: string[];
   @Input() sumOfAllMedalsYears!: number[];
 
-  public pieChart!: Chart<"pie", number[], string>;
+  @ViewChild('pieCanvas', { static: true }) pieCanvas!: ElementRef<HTMLCanvasElement>;
+
+  public pieChart!: Chart;
 
   constructor(private router: Router) { }
 
 
   ngOnChanges() {
     // Vérifie si l'Input est défini et non vide
-    if (this.keyValueInput && Object.keys(this.keyValueInput)) {
-      this.buildPieChart(Object.keys(this.keyValueInput), Object.values(this.keyValueInput));
+    if (this.pieChartDatas && this.pieCanvas) {
+      this.buildPieChart(this.pieChartDatas.map(item => item.id), this.pieChartDatas.map(item => item.country), this.pieChartDatas.map(item => item.medals));
     }
   }
 
-  buildPieChart(countryNames: string[], sumOfAllMedalsYears: number[]) {
-    const pieChart = new Chart("DashboardPieChart", {
+  buildPieChart(ids: number[], countryNames: string[], sumOfAllMedalsYears: number[]) {
+    const ctx = this.pieCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+    const pieChart = new Chart(ctx, {
       type: 'pie',
       data: {
         labels: countryNames,
@@ -41,14 +44,16 @@ export class DashboardPieChartComponent {
         }],
       },
       options: {
-        aspectRatio: 2.5,
+        responsive: true,
+        maintainAspectRatio: false,
         onClick: (e) => {
           if (e.native) {
             const points = pieChart.getElementsAtEventForMode(e.native, 'point', { intersect: true }, true)
             if (points.length) {
               const firstPoint = points[0];
               const countryName = pieChart.data.labels ? pieChart.data.labels[firstPoint.index] : '';
-              this.router.navigate(['country', countryName]);
+              const id = ids[firstPoint.index];
+              this.router.navigate(['country', id]);
             }
           }
         }

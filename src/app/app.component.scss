@@ -1,0 +1,44 @@
+.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    /* Espacement entre les colonnes */
+    margin: 0 -8px;
+    /* Compense le padding des colonnes */
+}
+
+.col {
+    padding: 0 8px;
+    /* Espacement interne pour éviter que le contenu touche les bords */
+    box-sizing: border-box;
+}
+
+/* Desktop : 12 colonnes côte à côte */
+@media (min-width: 1200px) {
+    .col {
+        flex: 0 0 calc(100% / 12);
+        max-width: calc(100% / 12);
+    }
+}
+
+/* Tablette : 8 colonnes, graphe pleine largeur (exemple : 1 colonne sur 8) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .col {
+        flex: 0 0 calc(100% / 8);
+        max-width: calc(100% / 8);
+    }
+
+    /* Si tu veux qu'un graphe prenne toute la largeur sur tablette */
+    .col.graph {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* Mobile : 4 colonnes, pile verticale */
+@media (max-width: 767px) {
+    .col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

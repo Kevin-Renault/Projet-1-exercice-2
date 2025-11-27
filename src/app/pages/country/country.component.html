@@ -1,30 +1,33 @@
-<div>
-  <div>
-    <div class="center">
-      <div>{{ titlePage }}</div>
+<div class="container-fluid">
+  @if(error())
+  {
+  <app-error title="The requested country was not found in the database"></app-error>
+
+  }
+  @else if (loading()){
+  <app-header [title]="(titlePage)"></app-header>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-success" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
-    <div class="split">
-      <div>
-        <p>Number of entries</p>
-        <p>{{ totalEntries }}</p>
+  </div>
+  }
+  @else
+  {
+  <div class="row">
+    <div class="col-12">
+      <app-header [title]="(titlePage)" [options]="(options)"></app-header>
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12" class="chart-container wrapper-container">
+        <div class="container">
+          <app-chart-card title="countryChart" label="medals" [labels]="(years)"
+            [values]="(medalsPerYear)"></app-chart-card>
+          <h2>Date</h2>
+        </div>
       </div>
-      <div>
-        <p>Total Number of medals</p>
-        <p>{{ totalMedals }}</p>
-      </div>
-      <div>
-        <p>Total Number of athletes</p>
-        <p>{{ totalAthletes }}</p>
+      <div class="center">
+        <a routerLink="">Go back</a>
       </div>
     </div>
   </div>
-  <div class="chart-container wrapper-container">
-    <div class="container">
-      <app-chart-card title="countryChart" label="medals" [years]="(years)" [values]="(medalsPerYear)"></app-chart-card>
-      <h2>Date</h2>
-    </div>
-  </div>
-  <div class="center">
-    <a routerLink="">Go back</a>
-  </div>
+  }
 </div>

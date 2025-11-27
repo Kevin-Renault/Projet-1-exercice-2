@@ -1,5 +1,5 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
-import { Chart } from 'chart.js';
+import { Component, Input, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
+import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-chart-card',
@@ -10,15 +10,16 @@ export class ChartCardComponent {
 
   @Input() title!: string;
   @Input() label!: string;
-  @Input() values!: string[];
-  @Input() years!: number[];
+  @Input() values!: number[];
+  @Input() labels!: string[];
 
-  public lineChart!: Chart<"line", string[], number>;
+  @ViewChild('chartCanvas', { static: true }) chartCanvas!: ElementRef<HTMLCanvasElement>;
 
+  public lineChart!: Chart;
 
   ngOnChanges() {
-    if (this.areInputsValid()) {
-      this.buildChart(this.years, this.values);
+    if (this.areInputsValid() && this.chartCanvas) {
+      this.buildChart(this.labels, this.values);
     }
   }
 
@@ -26,16 +27,18 @@ export class ChartCardComponent {
     return [
       this.title,
       this.label,
-      this.years,
+      this.labels,
       this.values
     ].every(input => input != null && input.length > 0);
   }
 
-  buildChart(years: number[], values: string[]) {
-    const lineChart = new Chart(this.title, {
+  buildChart(labels: string[], values: number[]) {
+    const ctx = this.chartCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+    const lineChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: years,
+        labels: labels,
         datasets: [
           {
             label: this.label,
@@ -45,7 +48,8 @@ export class ChartCardComponent {
         ]
       },
       options: {
-        aspectRatio: 2.5
+        responsive: true,
+        maintainAspectRatio: false
       }
     });
     this.lineChart = lineChart;

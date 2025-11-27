@@ -1,0 +1,12 @@
+<div class="center">
+    <div>{{ title }}</div>
+</div>
+<div class="split">
+    @for(option of options; track option)
+    {
+    <div>
+        <p>{{ option.libelle }}</p>
+        <p>{{ option.value }}</p>
+    </div>
+    }
+</div>

@@ -1,6 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Country } from 'src/app/models/country.model';
+import { Component, computed, effect, inject, OnInit } from '@angular/core';
+import { Olympic } from 'src/app/models/olympic.model';
+import { PieChartData } from 'src/app/models/pie-chart-data.model';
 import { DataService } from 'src/app/services/data.service';
+import { Option } from 'src/app/models/option.model';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-home',
@@ -20,24 +23,44 @@ export class HomeComponent implements OnInit {
   public sumOfAllMedalsYears!: number[];
 
 
-  public medalsByCountry!: Record<string, number>;
+  readonly olympicList = toSignal(
+    this.dataService.getCountryList(),
+    { initialValue: [] }
+  );
 
+  readonly loading = computed(() => this.olympicList().length === 0);
+  readonly hasError = computed(() => this.error != undefined);
+
+
+  public pieChartDatas!: PieChartData[];
+
+  public options!: Option[];
   ngOnInit() {
-    this.loadCountryList();
   }
 
-  loadCountryList() {
-    this.dataService.getCountryList().subscribe({
-      next: (data: Country[]) => {
-        const allYears: number[] = data.flatMap(country => country.participations.map(participation => participation.year));
-        this.totalJOs = this.totalJOs = new Set(allYears).size;
-        this.medalsByCountry = this.dataService.medalsByCountry;
-        this.totalCountries = Object.keys(this.medalsByCountry).length;
-      },
-      error: (error) => {
-        console.error('Erreur lors du chargement des pays :', error);
-      }
+  constructor() {
+    effect(() => {
+      this.setValues()
     });
   }
+  setValues() {
+    const data = this.olympicList();
+    if (data) {
+      const allYears: number[] = data.flatMap(country => country.participations.map(participation => participation.year));
+      this.totalJOs = this.totalJOs = new Set(allYears).size;
+      this.pieChartDatas = this.dataService.pieChartDatas;
+      this.totalCountries = this.pieChartDatas.length;
+      this.options =
+        [
+          {
+            libelle: "Number of countries",
+            value: this.totalCountries
+          },
+          {
+            libelle: "Number of JOs",
+            value: this.totalJOs
+          },
+        ];
+    }
+  }
 }
-

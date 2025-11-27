@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Country } from '../models/country.model';
+import { Olympic } from '../models/olympic.model';
 import { Observable } from 'rxjs/internal/Observable';
 import { catchError, map, of } from 'rxjs';
 import { Participation } from '../models/participation.model';
+import { PieChartData } from '../models/pie-chart-data.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,17 +12,17 @@ import { Participation } from '../models/participation.model';
 export class DataService {
 
   readonly DATA_URL = './assets/mock/olympic.json';
-  private countryList!: Observable<Country[]>
+  private countryList!: Observable<Olympic[]>
   private isCountryAllReadyLoaded = false;
 
   constructor(private http: HttpClient) { }
 
-  public medalsByCountry: Record<string, number> = {};
+  public pieChartDatas: PieChartData[] = [];
 
-  getCountryList(): Observable<Country[]> {
+  getCountryList(): Observable<Olympic[]> {
     if (!this.isCountryAllReadyLoaded) {
-      this.countryList = this.http.get<Country[]>(this.DATA_URL).pipe(
-        map((countries: Country[]) => {
+      this.countryList = this.http.get<Olympic[]>(this.DATA_URL).pipe(
+        map((countries: Olympic[]) => {
           if (!Array.isArray(countries)) {
             throw new Error('Les données ne sont pas un tableau');
           }
@@ -30,7 +31,13 @@ export class DataService {
               (sum, participation) => sum + participation.medalsCount,
               0
             );
-            this.medalsByCountry[country.country] = totalMedals;
+            const pieChartData: PieChartData =
+            {
+              id: country.id,
+              country: country.country,
+              medals: totalMedals,
+            }
+            this.pieChartDatas[country.id - 1] = pieChartData;
           });
           return countries.map(item => ({
             id: Number(item.id),
@@ -57,31 +64,39 @@ export class DataService {
     return this.countryList;
   }
 
-  getCountryByName(name: string): Observable<Country | undefined> {
+  getCountryByName(name: string): Observable<Olympic | undefined> {
     return this.getCountryList().pipe(
-      map((countries: Country[]) => {
+      map((countries: Olympic[]) => {
         return countries.find(country => country.country.toLowerCase() === name.toLowerCase());
       })
     );
   }
 
-  // Récupère un pays par son nom + calcule les totaux
-  getCountryWithStats(name: string): Observable<{
-    country: Country;
+  getCountryById(id: number): Observable<Olympic | undefined> {
+    return this.getCountryList().pipe(
+      map((countries: Olympic[]) => {
+        return countries.find(country => country.id == id);
+      })
+    );
+  }
+
+  // Récupère un pays par son id + calcule les totaux
+  getCountryWithStatsById(id: number): Observable<{
+    olympic: Olympic;
     totalMedals: number;
     totalAthletes: number;
-    years: number[];
-    medals: string[];
+    years: string[];
+    medals: number[];
   } | null> {
-    return this.getCountryByName(name).pipe(
-      map((country: Country | undefined) => {
-        if (!country) return null;
+    return this.getCountryById(id).pipe(
+      map((olympic: Olympic | undefined) => {
+        if (!olympic) throw new Error("Pays non présent dans la base.");
         return {
-          country,
-          totalMedals: this.calculateTotalMedals(country.participations),
-          totalAthletes: this.calculateTotalAthletes(country.participations),
-          years: country.participations.map(p => p.year),
-          medals: country.participations.map(p => p.medalsCount.toString())
+          olympic,
+          totalMedals: this.calculateTotalMedals(olympic.participations),
+          totalAthletes: this.calculateTotalAthletes(olympic.participations),
+          years: olympic.participations.map(p => p.year.toString()),
+          medals: olympic.participations.map(p => p.medalsCount)
         };
       })
     );

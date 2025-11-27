@@ -1,7 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+
+import { Component, computed, effect, inject, OnInit } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { COUNTRY_NAME } from 'src/app/constants/constants.utils';
+import { catchError, map, of } from 'rxjs';
+import { Option } from 'src/app/models/option.model';
 import { DataService } from 'src/app/services/data.service';
 
 
@@ -16,41 +18,65 @@ export class CountryComponent implements OnInit {
   public totalEntries: number = 0;
   public totalMedals: number = 0;
   public totalAthletes: number = 0;
-  public error!: string;
 
-  public medalsPerYear!: string[];
-  public years!: number[];
+  public medalsPerYear!: number[];
+  public years!: string[];
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) {
+
+  readonly entryId = Number(this.route.snapshot.paramMap.get("id"));
+
+  readonly dataServiceResponse = toSignal(
+    this.dataService.getCountryWithStatsById(this.entryId).pipe(
+      map((country) => ({
+        value: country,
+        error: undefined
+      })),
+      catchError((error) => of({ value: undefined, error: error }))
+    )
+  );
+
+  readonly loading = computed(() => this.dataServiceResponse() == undefined);
+  readonly error = computed(() => this.dataServiceResponse()?.error != undefined);
+  readonly entryData = computed(() => this.dataServiceResponse()?.value);
+
+
+  public options!: Option[];
+
+
+
+  constructor(private route: ActivatedRoute) {
+    effect(() => {
+      this.setValues()
+    });
   }
 
-  ngOnInit() {
-    this.loadCountryList();
+  ngOnInit(): void {
   }
 
-  loadCountryList() {
-    let countryName: string | null = null
-    this.route.paramMap.subscribe((param: ParamMap) => countryName = param.get(COUNTRY_NAME));
-    if (countryName) {
-      this.dataService.getCountryWithStats(countryName).subscribe({
-        next: (countryWithStats) => {
-          if (!countryWithStats) {
-            this.error = 'Pays non trouvé';
-            return;
-          }
-
-          // Affectation directe des propriétés
-          this.titlePage = countryWithStats.country.country;
-          this.totalEntries = countryWithStats.country.participations.length;
-          this.years = countryWithStats.years;
-          this.medalsPerYear = countryWithStats.medals;
-          this.totalMedals = countryWithStats.totalMedals;
-          this.totalAthletes = countryWithStats.totalAthletes;
+  setValues() {
+    const data = this.entryData();
+    if (data) {
+      this.titlePage = data.olympic.country;
+      this.totalEntries = data.olympic.participations.length;
+      this.years = data.years;
+      this.medalsPerYear = data.medals;
+      this.totalMedals = data.totalMedals;
+      this.totalAthletes = data.totalAthletes;
+      this.options = [
+        {
+          libelle: "Number of entries",
+          value: this.totalEntries
         },
-        error: (error) => {
-          this.error = error.message;
+        {
+          libelle: "Total Number of medals ",
+          value: this.totalMedals
+        },
+        {
+          libelle: "Total Number of athletes ",
+          value: this.totalAthletes
         }
-      });
+      ];
     }
   }
 }
+

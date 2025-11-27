@@ -1,20 +1,28 @@
-<h2>Olympic games app</h2>
-<hr/>
-<div>
-  <div>
-    <div class="center">
-      <div>{{ titlePage }}</div>
-    </div>
-    <div class="split">
-      <div>
-        <p>Number of countries</p>
-        <p>{{ totalCountries }}</p>
-      </div>
-      <div>
-        <p>Number of JOs</p>
-        <p>{{ totalJOs }}</p>
-      </div>
-    </div>
+<div class="grid-container">
+  <div class="col">
+    <h2>Olympic games app</h2>
+    <hr />
   </div>
-  <app-dashboard-pie-chart [keyValueInput]="(medalsByCountry)"></app-dashboard-pie-chart>
+  <div class="col">
+    @if(loading()){
+    <app-header [title]="(titlePage)"></app-header>
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    }
+    @else if(hasError()){
+    <app-header title="Error"></app-header>
+    }
+    @else{
+    <div>
+      <app-header [title]="(titlePage)" [options]="(options)"></app-header>
+
+      <app-dashboard-pie-chart [pieChartDatas]="(pieChartDatas)"></app-dashboard-pie-chart>
+
+    </div>
+    }
+  </div>
+  <!-- Ajoute autant de colonnes que nécessaire -->
 </div>
