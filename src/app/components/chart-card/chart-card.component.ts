@@ -23,6 +23,12 @@ export class ChartCardComponent {
     }
   }
 
+  ngOnDestroy() {
+    if (this.lineChart) {
+      this.lineChart.destroy();
+    }
+  }
+
   private areInputsValid(): boolean {
     return [
       this.title,

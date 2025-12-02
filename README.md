@@ -66,6 +66,11 @@ Organisation principale (chemin relatif à la racine) :
 
 Fichiers de configuration principaux : `tsconfig.json`, `angular.json`, `karma.conf.js`, `package.json`.
 
+![Schéma d'arborescence du projet](./ArborescencesP1.jpg)
+
+*Source : ArborescencesP1.jpg*
+
+
 ## Fonctionnalitéss
 
 - Navigation par routes entre les pages (home, détail d'un pays, page d'erreur).
@@ -92,9 +97,62 @@ Fichiers de configuration principaux : `tsconfig.json`, `angular.json`, `karma.c
 
 ## Liens et ressources
 
-- Architecture détaillée : `Architecture.md`
-- Scripts et dépendances : `package.json`
+- Architecture détaillée : [Architecture du projet](./Architecture.md).
+- Scripts et dépendances : [Scripts et dépendances](./package.json).
 
 ---
 
-Fichier `README.md` mis à jour.
+
+## Limites actuelles du projet
+
+### 1. Absence d'internationalisation (i18n)
+- **Description** :
+  Le projet ne prend pas en charge la gestion de plusieurs langues. Tous les textes sont codés en dur dans les composants et les templates.
+- **Impact** :
+  - L'application n'est accessible qu'à un public Anglophone (ou dans la langue par défaut).
+  - Ajouter une nouvelle langue nécessitera une refactorisation majeure.
+
+---
+
+### 2. Fonctionnalités CRUD incomplètes
+- **Description** :
+  Le projet ne gère que la **lecture des données** (opération *Read* du CRUD).
+  - **Création**, **modification** et **suppression** des données ne sont pas implémentées.
+- **Impact** :
+  - L'application est en mode **consultation seule**.
+  - Impossible d'interagir avec les données (ex: ajouter un pays, mettre à jour des statistiques).
+
+---
+
+### 3. Données mockées et non validées
+- **Description** :
+  Les données utilisées proviennent de fichiers JSON statiques (`./assets/mock/olympic.json`).
+  - **Non connecté à une API réelle** ou une base de données.
+  - **Pas de validation** des données (ex: cohérence des valeurs, format des champs).
+- **Impact** :
+  - Risque d'erreurs ou d'incohérences si les données mockées ne reflètent pas la réalité.
+  - Impossible de tester le comportement avec des données dynamiques ou des cas limites.
+
+---
+
+---
+### 4. Pas de gestion des rôles/utilisateurs
+- **Description** :
+  Le projet ne dispose d'aucun système d'**authentification** ou d'**autorisation**.
+  - Tous les utilisateurs ont les **mêmes droits** (ex: accès à toutes les fonctionnalités).
+  - Aucune distinction entre rôles (ex: administrateur, utilisateur standard, invité).
+- **Impact** :
+  - **Risque de sécurité** : Impossible de restreindre l'accès à certaines fonctionnalités.
+  - **Manque de personnalisation** : L'expérience utilisateur ne peut pas être adaptée selon les permissions.
+
+---
+### 5. Pas de tests automatisés
+- **Description** :
+  Aucune couverture de tests n'est implémentée :
+  - **Tests unitaires** (ex: Jest pour les composants/services).
+  - **Tests d'intégration** (ex: interaction entre composants).
+  - **Tests end-to-end** (ex: Cypress pour les parcours utilisateurs).
+- **Impact** :
+  - **Risque élevé de régressions** lors des mises à jour.
+  - Difficulté à garantir la stabilité du code sur le long terme.
+  - Maintenance et évolutions plus **lentes et risquées**.

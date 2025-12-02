@@ -29,6 +29,12 @@ export class DashboardPieChartComponent {
     }
   }
 
+  ngOnDestroy() {
+    if (this.pieChart) {
+      this.pieChart.destroy();
+    }
+  }
+
   buildPieChart(ids: number[], countryNames: string[], sumOfAllMedalsYears: number[]) {
     const ctx = this.pieCanvas.nativeElement.getContext('2d');
     if (!ctx) return;
